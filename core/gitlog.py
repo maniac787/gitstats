@@ -6,23 +6,24 @@ from core.model.commit import Commit
 from core.model.diffstat import Diffstat
 from core.model.numstat import Numstat
 
-GIT_LOG_NUMSTAT_NO_MERGES = "git log" \
+GIT_LOG_NUMSTAT_NO_MERGES = "git -C '{}' log" \
                             " --pretty=tformat:'.:*-*:.%n%h%n%aI%n%s%n%aN%n%aE%n%cN%n%cE'" \
                             " --numstat" \
                             " --no-merges" \
                             " --date=iso8601"
 
-GIT_LOG_NUMSTAT_MERGES = "git log" \
-                            " --pretty=tformat:'.:*-*:.%n%h%n%aI%n%s%n%aN%n%aE%n%cN%n%cE'" \
-                            " --numstat" \
-                            " --merges" \
-                            " --date=iso8601"
+GIT_LOG_NUMSTAT_MERGES = "git -C '{}' log" \
+                         " --pretty=tformat:'.:*-*:.%n%h%n%aI%n%s%n%aN%n%aE%n%cN%n%cE'" \
+                         " --numstat" \
+                         " --merges" \
+                         " --date=iso8601"
 
 
-def git_log_numstat_merges(load=False) -> List[Numstat]:
+def git_log_numstat_merges(load=False, repo_path="") -> List[Numstat]:
+    cadena = GIT_LOG_NUMSTAT_MERGES.format(repo_path)
     if not load:
         logging.info("git log numstat merges")
-        raw_logs = __git_log_numstat(GIT_LOG_NUMSTAT_MERGES)
+        raw_logs = __git_log_numstat(cadena)
         numstat = __raw_logs_to_numstat(raw_logs)
         persistence.dump_numstat_merges(numstat)
         return numstat
@@ -30,13 +31,13 @@ def git_log_numstat_merges(load=False) -> List[Numstat]:
     try:
         return persistence.load_numstat_merges()
     except (FileNotFoundError, EOFError):
-        return git_log_numstat_merges(False)
+        return git_log_numstat_merges(False, repo_path)
 
 
-def git_log_numstat_no_merges(load=False) -> List[Numstat]:
+def git_log_numstat_no_merges(load=False, repo_path="") -> List[Numstat]:
     if not load:
         logging.info("git log numstat no-merges")
-        raw_logs = __git_log_numstat(GIT_LOG_NUMSTAT_NO_MERGES)
+        raw_logs = __git_log_numstat(GIT_LOG_NUMSTAT_NO_MERGES.format(repo_path))
         numstat = __raw_logs_to_numstat(raw_logs)
         persistence.dump_numstat(numstat)
         return numstat

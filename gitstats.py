@@ -18,22 +18,22 @@ if __name__ == "__main__":
     parser.add_argument("--load", action="store_true", help="try loading previous data")
     parser.add_argument("--version", action="version", version="%(prog)s 0.2")
     args = parser.parse_args()
+    repo_path = 'D:\\Projects\\BAC\\AZURE\\bancadigital-ms-accounts'
 
     if args.format == "confluencewiki":
-        printer = Printer("confluencewiki")
+        printer = Printer("confluencewiki", repo_path)
 
     elif args.format == "markdown":
-        printer = Printer("markdown")
+        printer = Printer("markdown", repo_path)
 
     else:
         parser.exit(1, args.format + "is not supported")
         raise Exception(args.format + "is not supported")
 
-    gitlog.git_log_numstat_merges(args.load)
-    numstat: List[Numstat] = gitlog.git_log_numstat_no_merges(args.load)
-    files = gitls.git_ls_files()
-    blame: List[Blame] = gitblame.git_blame(files, args.load)
+    gitlog.git_log_numstat_merges(args.load, repo_path)
+    numstat: List[Numstat] = gitlog.git_log_numstat_no_merges(args.load, repo_path)
+    files = gitls.git_ls_files(repo_path)
+    blame: List[Blame] = gitblame.git_blame(repo_path, files, args.load)
 
     printer.print(numstat, blame)
     logging.info("--- %s seconds ---" % (time.process_time() - start_time))
-

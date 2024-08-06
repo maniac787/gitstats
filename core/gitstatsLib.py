@@ -49,7 +49,8 @@ def count_commits_on_behalf_of(numstat: List[Numstat]) -> Tuple[List, List[List]
         authors.add(n.author)
 
     authors = sorted(authors)
-    header = ["    ┌─> author\ncommitter"]
+    # header = ["    ┌─> author\ncommitter"]
+    header = ["        author\ncommitter"]
     header.extend(authors)
 
     data = list()
@@ -197,12 +198,12 @@ def count_empty_lines_of_code_by_author(blame: List[Blame], file_types: List[Fil
     return sorted(empty_lines_of_code_by_author, key=second_column, reverse=True)
 
 
-def count_files_by_extension() -> List[List]:
+def count_files_by_extension(repo_path: str) -> List[List]:
     """
     :return: list of [ext, num]
     """
     logging.info("counting files by extension")
-    extensions = map(lambda file: file.split(".")[-1] if "." in file else "NO EXT", gitls.git_ls_files())
+    extensions = map(lambda file: file.split(".")[-1] if "." in file else "NO EXT", gitls.git_ls_files(repo_path))
 
     files_by_extension = defaultdict(int)
     for extension in extensions:
@@ -243,19 +244,19 @@ def sorted_commits_by_impact(numstat: List[Numstat]) -> List[List]:
     return sorted(date_subject_author_num_of_files_insertions_deletions, key=lambda x: x[4] + x[5], reverse=True)
 
 
-def sorted_refs_remotes_origin_by_date() -> List[List]:
+def sorted_refs_remotes_origin_by_date(repo_path: str) -> List[List]:
     """
     :return: list of [date, author, ref]
     """
-    return sorted(gitforeachref.git_refs_remotes_origin(), key=first_column)
+    return sorted(gitforeachref.git_refs_remotes_origin(repo_path), key=first_column)
 
 
-def count_refs_remotes_origin_by_author() -> List[List]:
+def count_refs_remotes_origin_by_author(repo_path: str) -> List[List]:
     """
     :return: list of [author, total]
     """
     refs_remotes_origin_by_author = defaultdict(int)
-    for item in gitforeachref.git_refs_remotes_origin():
+    for item in gitforeachref.git_refs_remotes_origin(repo_path):
         refs_remotes_origin_by_author[item[1]] += 1
     refs_remotes_origin_by_author = map(list, refs_remotes_origin_by_author.items())
     return sorted(refs_remotes_origin_by_author, key=second_column, reverse=True)
@@ -303,7 +304,8 @@ def count_reviews(numstat: List[Numstat], reviewer_regex: str) -> Tuple[List[str
             authors.add(n.author)
 
     authors = sorted(authors)
-    header = ["    ┌─> author\nreviewer"]
+    # header = ["    ┌─> author\nreviewer"]
+    header = ["        author\nreviewer"]
     header.extend(authors)
 
     data = list()

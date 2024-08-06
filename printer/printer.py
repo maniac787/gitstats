@@ -23,11 +23,12 @@ from printer.markdown import MarkdownFormatter
 
 class Printer:
 
-    def __init__(self, _format):
+    def __init__(self, _format, _repo_path):
         self.__formatter = ConfluenceWikiFormatter() if _format == "confluencewiki" else MarkdownFormatter()
         self.__file = open('gitstats.confluencewiki.txt', 'w') \
             if _format == "confluencewiki" \
             else open('gitstats.md', 'w')
+        self.__repo_path = _repo_path
 
     def print(self, numstat: List[Numstat], blame: List[Blame]):
         self.__print_cumulated_commits_over_time_by_author(numstat)
@@ -328,7 +329,7 @@ class Printer:
         print(self.__formatter.column(), file=self.__file)
         print(self.__formatter.h2("Forgotten remote origin refs"), file=self.__file)
         header = ("last commit date", "author", "ref")
-        data = gitstatsLib.sorted_refs_remotes_origin_by_date()
+        data = gitstatsLib.sorted_refs_remotes_origin_by_date(self._Printer__repo_path)
         data = limit(data, 10)
         apply_to_column(data, 0, lambda x: x.strftime("%d/%m/%Y"))
         replace_author_column(data, 1)
@@ -338,7 +339,7 @@ class Printer:
 
         print(self.__formatter.column(), file=self.__file)
         header = ("author", "total")
-        data = gitstatsLib.count_refs_remotes_origin_by_author()
+        data = gitstatsLib.count_refs_remotes_origin_by_author(self._Printer__repo_path)
         data = limit(data, 8, True)
         replace_author_column(data)
         print(self.__formatter.chart(header,
@@ -360,7 +361,7 @@ class Printer:
         print(self.__formatter.h2("Files by extension"), file=self.__file)
         print(self.__formatter.column(), file=self.__file)
         header = ("extension", "total")
-        data = gitstatsLib.count_files_by_extension()
+        data = gitstatsLib.count_files_by_extension(self._Printer__repo_path)
         data = limit(data, 8, True)
         print(self.__formatter.chart(header,
                                      data,

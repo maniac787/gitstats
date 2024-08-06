@@ -5,17 +5,17 @@ from typing import List, Dict
 from core import process
 from core.mailmap import Mailmap
 
-GIT_FOR_EACH_REF = "git for-each-ref" \
+GIT_FOR_EACH_REF = "git -C '{}' for-each-ref" \
                    " --format='%(committerdate:iso8601).:*-*:.%(authorname).:*-*:.%(authoremail).:*-*:.%(refname)'" \
                    " refs/remotes/origin"
 
 
-def git_refs_remotes_origin() -> List[List]:
+def git_refs_remotes_origin(repo_path: str) -> List[List]:
     """
     :return: list of [date, author, ref]
     """
-    logging.info("executing %s", GIT_FOR_EACH_REF)
-    lines = process.execute(GIT_FOR_EACH_REF).split("\n")[:-1]
+    logging.info("executing %s", GIT_FOR_EACH_REF.format(repo_path))
+    lines = process.execute(GIT_FOR_EACH_REF.format(repo_path)).split("\n")[:-1]
     return list(map(raw_line_to_ref, lines))
 
 
