@@ -6,16 +6,16 @@ from core import process
 from core.mailmap import Mailmap
 from core.utilities import second_column, aggregate_and_sum
 
-GIT_SHORTLOG_NO_MERGES = "git shortlog HEAD -s -e -n --no-merges"
-GIT_SHORTLOG_MERGES = "git shortlog HEAD -s -e -n --merges"
+GIT_SHORTLOG_NO_MERGES = "git -C '{}' shortlog HEAD -s -e -n --no-merges"
+GIT_SHORTLOG_MERGES = "git -C '{}' shortlog HEAD -s -e -n --merges"
 
 
-def count_commits_by_author() -> List[List]:
+def count_commits_by_author(repo_path: str) -> List[List]:
     """
     :return: list of [author, commits]
     """
-    logging.info("executing %s", GIT_SHORTLOG_NO_MERGES)
-    raw_short_logs = process.execute(GIT_SHORTLOG_NO_MERGES).split("\n")
+    logging.info("executing %s", GIT_SHORTLOG_NO_MERGES.format(repo_path))
+    raw_short_logs = process.execute(GIT_SHORTLOG_NO_MERGES.format(repo_path)).split("\n")
     logging.info("counting commits by author")
     short_logs = __raw_short_logs_to_short_logs(raw_short_logs)
     commits_by_author = aggregate_and_sum(short_logs, "author", "commits")
@@ -23,12 +23,12 @@ def count_commits_by_author() -> List[List]:
     return sorted(author_commits, key=second_column, reverse=True)
 
 
-def count_merges_by_author() -> List[List]:
+def count_merges_by_author(repo_path: str) -> List[List]:
     """
     :return: list of [author, merges]
     """
-    logging.info("executing %s", GIT_SHORTLOG_MERGES)
-    raw_short_logs = process.execute(GIT_SHORTLOG_MERGES).split("\n")
+    logging.info("executing %s", GIT_SHORTLOG_MERGES.format(repo_path))
+    raw_short_logs = process.execute(GIT_SHORTLOG_MERGES.format(repo_path)).split("\n")
     logging.info("counting merges by author")
     short_logs = __raw_short_logs_to_short_logs(raw_short_logs)
     merges_by_author = aggregate_and_sum(short_logs, "author", "commits")
@@ -48,4 +48,3 @@ def __raw_short_log_to_short_log(short_log_match) -> Dict:
     commits = int(short_log_match.group(1))
     author = Mailmap.instance().get(name, email)
     return {"author": author, "commits": commits}
-

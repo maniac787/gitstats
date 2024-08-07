@@ -97,6 +97,14 @@ def replace_author_column(table: List[List], column: int = 0):
         table[row][column] = table[row][column].name if isinstance(table[row][column], Author) else table[row][column]
 
 
+def replace_pipe_character(table: List[List], column: int = 0):
+    for row in range(len(table)):
+        try:
+            table[row][column] = table[row][column].replace("|", "\|")
+        except Exception as e:
+            print(f"An unexpected error occurred: {e}")
+
+
 def first_column(table):
     return table[0]
 

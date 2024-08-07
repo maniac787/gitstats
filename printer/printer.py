@@ -13,7 +13,7 @@ from core.utilities import apply_to_row
 from core.utilities import cumulate_rows
 from core.utilities import group_rows_by_year
 from core.utilities import limit
-from core.utilities import replace_author_column, filter_active_authors
+from core.utilities import replace_author_column, filter_active_authors, replace_pipe_character
 from core.utilities import replace_author_row
 from core.utilities import sum_by_column
 from core.utilities import sum_by_row
@@ -102,7 +102,7 @@ class Printer:
 
             ["Merger",
              "with %d merge committed  \n followed by %s with %d commits and %s with %d commits",
-             gitshortlog.count_merges_by_author()],
+             gitshortlog.count_merges_by_author(self._Printer__repo_path)],
 
             ["DjSON",
              "with %d edited lines in json files  \nfollowed by %s with %d eloc and %s with %d eloc",
@@ -245,7 +245,7 @@ class Printer:
 
         print(self.__formatter.column(), file=self.__file)
         header = ("author", "commits")
-        data = gitshortlog.count_commits_by_author()
+        data = gitshortlog.count_commits_by_author(self._Printer__repo_path)
         replace_author_column(data)
         data = limit(data, 8, True)
         print(self.__formatter.chart(header,
@@ -433,6 +433,7 @@ class Printer:
         print(self.__formatter.h2("Most impactful commits"), file=self.__file)
         header = ("date", "subject", "author", "num_of_file", "insertions", "deletions")
         data = gitstatsLib.sorted_commits_by_impact(numstat)[:10]
+        replace_pipe_character(data, column=1)
         replace_author_column(data, column=2)
         print(self.__formatter.table(header, data, md="|---:|:---|:---|---:|---:|---:|"), file=self.__file)
         print(self.__formatter.section(), file=self.__file)
