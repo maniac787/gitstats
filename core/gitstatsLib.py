@@ -103,7 +103,7 @@ def count_commits_over_month_by_author(numstat: List[Numstat]) -> Tuple[List, Li
         commits = [date]
         commits.extend(map(lambda author: len(aggregate_by_month_and_author[date][author]), authors))
         commits_over_month_by_author.append(commits)
-    commits_over_month_by_author[-1][0] = "now"
+    # commits_over_month_by_author[-1][0] = "now"
     return header, commits_over_month_by_author
 
 
@@ -125,7 +125,7 @@ def get_impacts_over_month(numstat: List[Numstat]) -> List[List]:
         insertions = aggregate_by_date[date]["insertions"]
         deletions = aggregate_by_date[date]["deletions"]
         impacts_over_month.append([label, insertions, deletions])
-    impacts_over_month[-1][0] = "now"
+    # impacts_over_month[-1][0] = "now"
     return impacts_over_month
 
 
