@@ -50,7 +50,7 @@ def count_commits_on_behalf_of(numstat: List[Numstat]) -> Tuple[List, List[List]
 
     authors = sorted(authors)
     # header = ["    ┌─> author\ncommitter"]
-    header = ["        author\ncommitter"]
+    header = ["        author committer"]
     header.extend(authors)
 
     data = list()
@@ -305,7 +305,7 @@ def count_reviews(numstat: List[Numstat], reviewer_regex: str) -> Tuple[List[str
 
     authors = sorted(authors)
     # header = ["    ┌─> author\nreviewer"]
-    header = ["        author\nreviewer"]
+    header = ["        author reviewer"]
     header.extend(authors)
 
     data = list()
