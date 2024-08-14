@@ -1,5 +1,7 @@
 from typing import List
 
+import pandas as pd
+
 from core import gitstatsLib, gitshortlog
 from core.mailmap import Mailmap
 from core.model.blame import Blame
@@ -165,6 +167,9 @@ class Printer:
                                                  "categoryLabelPosition": "down90"},
                                      md="|%s|" % "|".join(["---:"] * len(header))),
               file=self.__file)
+
+        df = pd.DataFrame(data, columns=[header])
+        df.to_csv('data_analysis/csv/cumulated_commits_over_time_by_author.csv', index=False)
         print(self.__formatter.section(), file=self.__file)
 
     def __print_impacts_over_time(self, numstat):
