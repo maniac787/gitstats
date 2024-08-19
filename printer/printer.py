@@ -170,6 +170,7 @@ class Printer:
 
         df = pd.DataFrame(data, columns=[header])
         df.to_csv('data_analysis/csv/cumulated_commits_over_time_by_author.csv', index=False)
+
         print(self.__formatter.section(), file=self.__file)
 
     def __print_impacts_over_time(self, numstat):
