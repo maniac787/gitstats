@@ -3,3 +3,8 @@
 */mailmap.yaml
 */regexes.yaml
 .venv
+*.pkl
+*.spec
+/build
+/dist
+gitstats.md
