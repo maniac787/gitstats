@@ -70,8 +70,8 @@ def markdown_to_pdf(input_markdown_file, output_pdf_file):
     with open(input_markdown_file, 'r') as f:
         text = f.read()
 
-    pdf = MarkdownPdf(toc_level=2)
-    pdf.add_section(Section(text, toc=False))
+    pdf = MarkdownPdf(toc_level=6)
+    pdf.add_section(Section(text, toc=False, paper_size="A4-L"))
     pdf.meta["title"] = "User Guide"
     pdf.save("guide.pdf")
 
